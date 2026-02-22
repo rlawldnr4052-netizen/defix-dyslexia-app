@@ -1,15 +1,14 @@
 .app-header,
 .interest.app-header {
-  padding: 0 2.5rem;
-  /* Tighter padding, height managed rigidly */
+  padding: 0 3rem;
   background-color: transparent;
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: space-between !important;
   align-items: center !important;
-  height: 64px;
-  /* Standard SaaS header height */
+  height: 72px;
+  /* Slightly taller for breathing room */
   width: 100%;
   box-sizing: border-box;
 
@@ -18,11 +17,11 @@
   top: 0;
   z-index: 1000;
 
-  /* Visuals: Strong Glassmorphism */
+  /* Visuals: Ultra-light Glassmorphism */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  /* Removed border-bottom completely for an open feel */
+  transition: background-color 0.4s ease;
 }
 
 /* Semi-transparent background for blur effect if supported */
@@ -30,29 +29,30 @@
 
   .app-header,
   .interest.app-header {
-    background-color: rgba(253, 251, 247, 0.75);
-    /* Ivory with more transparency for blur */
+    background-color: rgba(253, 251, 247, 0.3);
+    /* Ultra-light opacity */
   }
 
   body.dark-mode .app-header,
   body.dark-mode .interest.app-header {
-    background-color: rgba(26, 26, 26, 0.75);
+    background-color: rgba(26, 26, 26, 0.3);
+    /* Ultra-light dark mode opacity */
   }
 }
 
 .logo {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
   margin: 0;
   color: var(--text-color);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   flex-shrink: 0;
 }
 
 .interest-nav {
   display: flex;
-  gap: 2rem;
-  /* Clean, generous spacing between text links */
+  gap: 2.5rem;
+  /* Wider spacing */
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
@@ -66,7 +66,7 @@
   display: none;
 }
 
-/* Professional Nav Item */
+/* Professional Minimal Nav Item */
 .interest-chip {
   position: relative;
   background: transparent;
@@ -76,10 +76,12 @@
   display: flex;
   align-items: center;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 400;
+  /* Regular weight for a lighter feel */
   color: var(--text-secondary);
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
+  letter-spacing: -0.01em;
 }
 
 .interest-chip:hover {
@@ -88,28 +90,27 @@
 
 .interest-chip.active {
   color: var(--text-color);
-  font-weight: 600;
+  font-weight: 500;
+  /* Subtle bump for active, but still sleek */
 }
 
-/* Animated Indicator Line */
+/* Refined Animated Indicator Line */
 .interest-chip::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 2px;
+  height: 1.5px;
+  /* Thinner line */
   background-color: var(--text-color);
   transform: scaleX(0);
-  /* Hidden by default */
   transform-origin: center;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 2px 2px 0 0;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .interest-chip.active::after {
   transform: scaleX(1);
-  /* Reveal on active */
 }
 
 .header-right {
