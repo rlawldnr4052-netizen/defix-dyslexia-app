@@ -1,0 +1,138 @@
+.app-header, .interest.app-header {
+  padding: 0.8rem 2rem;
+  background-color: var(--bg-color); /* Was ivory hardcoded */
+  display: flex !important; /* Force Flex */
+  flex-direction: row !important; /* Always Row */
+  flex-wrap: nowrap !important; /* Prevent vertical stacking */
+  justify-content: space-between !important; /* Spread items: Logo Left, Nav Center, Tools Right */
+  align-items: center !important;
+  height: 80px;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* Sticky Behavior */
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  
+  /* Visuals */
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+}
+
+/* Semi-transparent background for blur effect if supported */
+@supports (backdrop-filter: blur(12px)) {
+  .app-header, .interest.app-header {
+      background-color: rgba(253, 251, 247, 0.9);
+  }
+  body.dark-mode .app-header, body.dark-mode .interest.app-header {
+      background-color: rgba(26, 26, 26, 0.9);
+  }
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-color);
+  letter-spacing: -0.02em;
+  flex-shrink: 0; /* Prevent logo from shrinking */
+}
+
+.interest-nav {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: nowrap; /* Force single line for nav chips */
+  justify-content: center; /* Center the chips */
+  margin: 0 1rem; /* Spacing from Logo and Tools */
+  overflow-x: auto; /* Allow scrolling if screen is too small */
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+.interest-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.interest-chip {
+  padding: 0.5rem 1.2rem;
+  background-color: #ffffff; /* Requested Pure White */
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  border: none; /* Remove harsh border */
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333333; /* Strong black text */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Soft premium shadow */
+}
+
+.interest-chip:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color); /* Invert */
+  transform: translateY(-1px);
+}
+
+/* Dark Mode Specific Overrides for Chips if needed */
+/* Dark Mode Specific Overrides for Chips */
+body.dark-mode .interest-chip {
+    background-color: rgba(255, 255, 255, 0.15); /* Increased visibility */
+    border-color: rgba(255, 255, 255, 0.3); /* Stronger border */
+    color: #FFFFFF; /* Pure White */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+body.dark-mode .interest-chip:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-color: #FFFFFF;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Glow effect */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-feature-settings: "tnum"; 
+  flex-shrink: 0; /* Prevent tools from shrinking */
+  flex-wrap: nowrap; /* strictly single line */
+}
+
+.focus-timer {
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  color: var(--text-color);
+}
+
+.icon-btn:hover {
+  background-color: var(--border-color);
+}
+
+/* Theme Toggle Button Style */
+.theme-toggle {
+    color: var(--text-color) !important;
+    transition: transform 0.2s;
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg);
+}

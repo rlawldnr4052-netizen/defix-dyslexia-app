@@ -1,0 +1,32 @@
+.reading-ruler {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 48px; /* Approx 2 lines or 1.8em line-height + padding */
+  pointer-events: none;
+  z-index: 9999;
+  transform: translateY(-50%); /* Center on cursor */
+  
+  /* Visual Style: Golden Highlighter for Light Mode */
+  background: rgba(255, 215, 0, 0.25); /* Stronger Gold */
+  border-top: 1px solid rgba(218, 165, 32, 0.4); /* Solid Gold Border */
+  border-bottom: 1px solid rgba(218, 165, 32, 0.4);
+  backdrop-filter: none;
+  transition: top 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: multiply; /* Highlighter effect */
+  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.1);
+}
+
+/* Ensure ruler doesn't block interactions */
+body.ruler-active * {
+    cursor: text; 
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .reading-ruler {
+  background: rgba(255, 215, 0, 0.15); /* Bright Yellow, low opacity */
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  mix-blend-mode: screen; /* Lightens the text under it */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1); /* Subtle Glow */
+}

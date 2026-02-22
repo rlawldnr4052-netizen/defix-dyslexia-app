@@ -1,0 +1,122 @@
+/* Manager & Layout */
+.reader-manager {
+  /* padding-top: 80px; Removed for Static Header */
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+/* News Feed */
+.news-feed-container {
+  padding: 2rem 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feed-title {
+  font-size: 3rem;
+  margin-bottom: 3rem;
+  color: #000;
+}
+
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feed-card {
+  background: white;
+  border-radius: 32px; /* User requested 32px */
+  box-shadow: var(--shadow-deep);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.feed-card:hover {
+  transform: translateY(-10px);
+}
+
+.card-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-info {
+  padding: 2rem;
+}
+
+.card-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-info p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Article Reader */
+.reader-container {
+  /* Remove fixed height/scroll to allow native window scrolling */
+  /* height: calc(100vh - 80px); */
+  /* overflow-y: scroll; */
+  min-height: 100vh;
+  padding: 0 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  margin: 2rem 0;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.article-unit {
+  margin-bottom: 8rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4rem;
+}
+
+.article-hero-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 32px;
+  margin: 2rem 0;
+}
+
+.article-content p {
+  font-size: 1.5rem;
+  margin-bottom: 4rem; /* Specific instruction for deep breathing space */
+  line-height: 2; /* Comfortable reading */
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); /* User requested text shadow */
+  transition: opacity 0.5s;
+}
+
+.focused-paragraph {
+  opacity: 1;
+}
+
+.dimmed-paragraph {
+  opacity: 0.2;
+}
+
+.hard-word {
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-underline-offset: 4px;
+  cursor: help;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.5;
+}

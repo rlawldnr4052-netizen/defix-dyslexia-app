@@ -1,0 +1,128 @@
+.news-feed-container {
+  padding: 2rem 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 100px; /* Space for fixed header */
+}
+
+.feed-title-main {
+  font-size: 3rem;
+  margin-bottom: 4rem;
+  color: #000;
+  letter-spacing: -0.05em;
+  text-align: center;
+}
+
+.category-section {
+  margin-bottom: 6rem;
+}
+
+.category-header {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(0,0,0,0.05);
+  padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-icon {
+  font-size: 2rem;
+}
+
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Wider cards */
+  gap: 3rem; /* Spacious gap */
+}
+
+.feed-card {
+  background: white;
+  border-radius: 32px;
+  box-shadow: var(--shadow-deep);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feed-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 40px 70px -15px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+  height: 250px; /* Taller image */
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feed-card:hover .card-image {
+  transform: scale(1.03);
+}
+
+.card-info {
+  padding: 2.5rem;
+}
+
+.card-meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+
+.card-info h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+  letter-spacing: -0.05em;
+  color: #000;
+}
+
+.card-info p {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  letter-spacing: 0.08em; /* Dyslexia Optimized */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .feed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .feed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .feed-title-main,
+body.dark-mode .category-header,
+body.dark-mode .card-info h3 {
+    color: var(--text-color);
+}
+
+body.dark-mode .category-header {
+    border-color: var(--border-color);
+}
+
+body.dark-mode .feed-card {
+    background-color: var(--card-bg);
+}
+
+body.dark-mode .card-info p {
+    color: var(--text-secondary);
+}

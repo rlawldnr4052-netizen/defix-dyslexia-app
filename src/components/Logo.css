@@ -1,0 +1,30 @@
+.fixed-logo {
+  /* position: fixed; Removed for Header integration */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Changed to pointer for interactivity */
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo-glow-container:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+}
+
+/* Dark Mode Glow */
+body.dark-mode .logo-glow-container:hover {
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.2));
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .fixed-logo {
+      top: 1rem;
+      left: 1rem;
+  }
+  .fixed-logo svg {
+      width: 36px;
+      height: 36px;
+  }
+}

@@ -1,0 +1,56 @@
+.focus-layout {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  flex: 1;
+}
+
+.focus-card {
+  background-color: var(--primary-color);
+  padding: 3.5rem 4rem;
+  max-width: 720px;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease;
+}
+
+.category-tag {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.article-title {
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  color: var(--text-color);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  word-break: keep-all; /* Prevent awkward breaks in Korean */
+}
+
+.article-content p {
+  font-size: 1.15rem;
+  margin-bottom: var(--paragraph-spacing);
+  text-align: left;
+  word-break: break-all; /* Clean logic for Korean lines */
+  text-align: justify; /* Optional: might be better for reading blocks, but check */
+  text-justify: inter-word;
+}
+
+@media (max-width: 768px) {
+  .focus-layout {
+    padding: 1rem;
+  }
+  .focus-card {
+    padding: 2rem;
+    border-radius: 16px;
+  }
+  .article-title {
+    font-size: 1.8rem;
+  }
+}
