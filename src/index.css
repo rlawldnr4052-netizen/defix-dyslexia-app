@@ -2,55 +2,98 @@
 
 :root {
   /* Colors - Light Mode (Default) */
-  --bg-color: #FDFBF7; /* Ivory White */
+  --bg-color: #FDFBF7;
+  /* Ivory White */
   --text-color: #333333;
   --text-secondary: #666666;
   --card-bg: #FFFFFF;
   --accent-color: #555555;
-  --primary-color: #000000; /* Buttons, Strong Text */
+  --primary-color: #000000;
+  /* Buttons, Strong Text */
   --border-color: rgba(0, 0, 0, 0.05);
 
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
-  --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Deep Shadow */
+  --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  /* Deep Shadow */
 
   /* Typography */
   --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   --font-weight-medium: 500;
-  
-  /* Layout */
-  --line-height-relaxed: 1.8;
-  --letter-spacing-tight: 0.02em;
-  --paragraph-spacing: 1.6em;
+
+  /* Layout & Spacing */
+  --line-height-relaxed: 1.85;
+  /* Increased for better readability */
+  --letter-spacing-tight: -0.01em;
+  /* Modern tight tracking */
+  --paragraph-spacing: 2em;
+  /* More breathing room between paragraphs */
+  --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-full: 9999px;
 }
 
 /* Dark Mode Theme */
 body.dark-mode {
-  --bg-color: #1A1A1A; /* Soft Charcoal */
-  --text-color: #E0E0E0; /* Off-White */
+  --bg-color: #1A1A1A;
+  /* Soft Charcoal */
+  --text-color: #E0E0E0;
+  /* Off-White */
   --text-secondary: #AAAAAA;
-  --card-bg: #252525; /* Slightly lighter charcoal */
+  --card-bg: #252525;
+  /* Slightly lighter charcoal */
   --accent-color: #888888;
   --primary-color: #FFFFFF;
   --border-color: rgba(255, 255, 255, 0.1);
-  
+
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
   --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* Grainy Gradient Background Animation */
 @keyframes noise {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-5%, -5%); }
-  20% { transform: translate(-10%, 5%); }
-  30% { transform: translate(5%, -10%); }
-  40% { transform: translate(-5%, 15%); }
-  50% { transform: translate(-10%, 5%); }
-  60% { transform: translate(15%, 0); }
-  70% { transform: translate(0, 10%); }
-  80% { transform: translate(-15%, 0); }
-  90% { transform: translate(10%, 5%); }
-  100% { transform: translate(5%, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  10% {
+    transform: translate(-5%, -5%);
+  }
+
+  20% {
+    transform: translate(-10%, 5%);
+  }
+
+  30% {
+    transform: translate(5%, -10%);
+  }
+
+  40% {
+    transform: translate(-5%, 15%);
+  }
+
+  50% {
+    transform: translate(-10%, 5%);
+  }
+
+  60% {
+    transform: translate(15%, 0);
+  }
+
+  70% {
+    transform: translate(0, 10%);
+  }
+
+  80% {
+    transform: translate(-15%, 0);
+  }
+
+  90% {
+    transform: translate(10%, 5%);
+  }
+
+  100% {
+    transform: translate(5%, 0);
+  }
 }
 
 .grain-overlay {
@@ -64,7 +107,8 @@ body.dark-mode {
   background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
   background-repeat: repeat;
   animation: noise 8s steps(10) infinite;
-  opacity: 0.03; /* Subtle texture */
+  opacity: 0.03;
+  /* Subtle texture */
   pointer-events: none;
   z-index: 0;
 }
@@ -76,9 +120,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--bg-color); /* Use Variable */
+  background-color: var(--bg-color);
+  /* Use Variable */
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth Theme Config */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* Smooth Theme Config */
 }
 
 /* Typography Defaults */
@@ -105,15 +151,20 @@ button {
 #webgazerVideoFeed,
 #webgazerFaceOverlay,
 #webgazerFaceFeedbackBox {
-  display: block !important; /* Required for processing */
-  opacity: 0.01 !important; /* Keep alive */
-  visibility: visible !important; /* Required for processing */
+  display: block !important;
+  /* Required for processing */
+  opacity: 0.01 !important;
+  /* Keep alive */
+  visibility: visible !important;
+  /* Required for processing */
   pointer-events: none !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
-  width: 320px !important; /* Minimal but Functional Resolution */
+  width: 320px !important;
+  /* Minimal but Functional Resolution */
   height: 240px !important;
-  z-index: -9999 !important; /* Behind everything */
+  z-index: -9999 !important;
+  /* Behind everything */
   overflow: hidden !important;
 }

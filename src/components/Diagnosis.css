@@ -4,21 +4,45 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  background: #FDFBF7;
+  background: var(--bg-color);
+  transition: background-color 0.4s ease;
 }
 
 .diagnosis-card {
   text-align: center;
-  max-width: 600px;
+  max-width: 680px;
   width: 100%;
+  padding: 4rem 2rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.diagnosis-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-deep);
+}
+
+.test-sentence {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
 }
 
 .typo-game-area {
   margin: 4rem 0;
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 3.5rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: transform 0.1s;
+  color: var(--text-color);
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-block;
+}
+
+.typo-game-area:hover {
+  transform: scale(1.05);
 }
 
 .typo-game-area:active {
@@ -29,7 +53,20 @@
   letter-spacing: -0.05em;
 }
 
+.typo-highlight {
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+/* Subtle hint effect on hover */
+.typo-game-area:hover .typo-highlight {
+  color: #ff3b30;
+  /* Subtle red hint on hover if they can't find it */
+}
+
 .instruction-text {
-  color: #999;
-  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-top: 3rem;
 }
