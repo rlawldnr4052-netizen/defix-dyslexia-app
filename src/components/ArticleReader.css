@@ -7,9 +7,11 @@
      No, usually Body scroll + Sticky Top is best for Mobile.
      Let's enforce Body Scroll but use Fixed positioning for Controls to be safe given user feedback.
   */
-  padding-top: 100px; /* Space for fixed header/logo */
+  padding-top: 100px;
+  /* Space for fixed header/logo */
   padding-bottom: 200px;
-  background-color: var(--bg-color); /* Use Variable */
+  background-color: var(--bg-color);
+  /* Use Variable */
   transition: background-color 0.3s ease;
 }
 
@@ -32,90 +34,93 @@
 
 /* Reader Controls - Fixed Top */
 .reader-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    /* Fixed Positioning to Guarantee "Always Visible" */
-    position: fixed;
-    top: 50px; /* Below Defix Logo */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 800px;
-    
-    z-index: 100;
-    /* Glassmorphism adapts to theme */
-    background: rgba(255, 255, 255, 0.8); 
-    backdrop-filter: blur(12px);
-    padding: 1rem 1rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    border: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Fixed Positioning to Guarantee "Always Visible" */
+  position: fixed;
+  top: 50px;
+  /* Below Defix Logo */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+
+  z-index: 100;
+  /* Glassmorphism adapts to theme */
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 body.dark-mode .reader-controls {
-    background: rgba(30, 30, 30, 0.8);
-    border-color: rgba(255,255,255,0.05);
+  background: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .summary-btn {
-    background: #000;
-    color: #fff;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.2s;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s;
 }
 
 .summary-btn.small {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }
 
 .summary-btn:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .summary-btn.loading {
-    opacity: 0.7;
-    cursor: wait;
-    transform: none;
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
 }
 
 .ai-summary-modal {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: var(--shadow-deep);
-    margin-bottom: 3rem;
-    border: 1px solid rgba(0,0,0,0.05);
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-deep);
+  margin-bottom: 3rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .ai-summary-modal h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    color: var(--accent-color);
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: var(--accent-color);
 }
 
 .ai-summary-modal ul {
-    padding-left: 1.5rem;
+  padding-left: 1.5rem;
 }
 
 .ai-summary-modal li {
-    margin-bottom: 0.8rem;
-    font-size: 1.1rem;
-    font-weight: 400; /* Reset for Bionic to work */
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 400;
+  /* Reset for Bionic to work */
 }
 
 /* Stream & Article */
 .articles-stream {
   display: flex;
   flex-direction: column;
-  gap: 10rem; /* Space between articles */
+  gap: 10rem;
+  /* Space between articles */
 }
 
 .article-header {
@@ -124,12 +129,12 @@ body.dark-mode .reader-controls {
 
 /* Article Metadata */
 .article-meta {
-    font-size: 0.9rem;
-    color: var(--accent-color);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
 }
 
 .article-header h1 {
@@ -151,31 +156,46 @@ body.dark-mode .reader-controls {
 /* Content & Typography - Eye Tracking Focus */
 .article-content {
   font-size: 1.4rem;
-  line-height: 1.8em !important; /* Forces 1.8em */
-  letter-spacing: 0.05em !important; /* Forces 0.05em */
-  color: #CCCCCC; /* Default Light Gray */
+  line-height: 1.8em !important;
+  /* Forces 1.8em */
+  letter-spacing: 0.05em !important;
+  /* Forces 0.05em */
+  color: #CCCCCC;
+  /* Default Light Gray */
   transition: color 0.2s ease;
-  padding-top: 4rem; /* More safe space */
+  padding-top: 4rem;
+  /* More safe space */
 }
 
 .reading-paragraph {
   margin-bottom: 3rem;
-  transition: all 0.2s ease; /* Smooth transition */
-  color: #CCCCCC; /* Inherit default */
+  transition: all 0.2s ease;
+  /* Smooth transition */
+  color: #CCCCCC;
+  /* Inherit default */
   cursor: default;
-  text-shadow: 0 0.5px 0 rgba(0,0,0,0.05); /* Fixed anchor shadow */
-  transform: translateZ(0); /* Optimize rendering */
-  padding: 1rem; /* Hit area */
+  text-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.05);
+  /* Fixed anchor shadow */
+  transform: translateZ(0);
+  /* Optimize rendering */
+  padding: 1rem;
+  /* Hit area */
   border-radius: 8px;
 }
 
 .active-focus {
-  background-color: #FFFCD0 !important; /* CreamHighlight */
-  color: #333333 !important; /* Force Black */
-  font-weight: 400 !important; /* Maintain Bionic Base */
-  border-radius: 8px; /* Smooth corners */
-  box-shadow: 0 4px 12px rgba(255, 252, 208, 0.4); /* Subtle glow */
-  transform: scale(1.02); /* Slight pop */
+  background-color: #FFFCD0 !important;
+  /* CreamHighlight */
+  color: #333333 !important;
+  /* Force Black */
+  font-weight: 400 !important;
+  /* Maintain Bionic Base */
+  border-radius: 8px;
+  /* Smooth corners */
+  box-shadow: 0 4px 12px rgba(255, 252, 208, 0.4);
+  /* Subtle glow */
+  transform: scale(1.02);
+  /* Slight pop */
   transition: all 0.2s ease-out;
 }
 
@@ -187,16 +207,18 @@ body.dark-mode .reader-controls {
 /* Hover/Focus State - Eye Tracking Simulation */
 .reading-paragraph:hover,
 .focused-paragraph {
-  color: #333333; /* Dark Black on Focus */
+  color: #333333;
+  /* Dark Black on Focus */
 }
 
 .focused-paragraph {
   /* No opacity change, color change handles focus now */
-  opacity: 1; 
+  opacity: 1;
 }
 
 .dimmed-paragraph {
-  opacity: 1; /* Reset dimming, use color focus instead */
+  opacity: 1;
+  /* Reset dimming, use color focus instead */
 }
 
 .hard-word {
@@ -207,7 +229,7 @@ body.dark-mode .reader-controls {
 
 .hard-word:hover {
   border-color: #000;
-  background-color: rgba(255,255,0,0.2);
+  background-color: rgba(255, 255, 0, 0.2);
 }
 
 .loading-indicator {
@@ -220,118 +242,137 @@ body.dark-mode .reader-controls {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.3; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.3; }
+  0% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
 }
 
 /* Pill Button - Requested Style */
 .pill-btn {
-    background-color: #000;
-    color: #fff;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 20px; /* Requested 20px */
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  /* Requested 20px */
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .pill-btn:hover {
-    transform: scale(1.05);
-    background-color: #333;
+  transform: scale(1.05);
+  background-color: #333;
 }
 
 .pill-btn.outline {
-    background-color: transparent;
-    border: 1px solid #000;
-    color: #000;
+  background-color: transparent;
+  border: 1px solid #000;
+  color: #000;
 }
 
 .pill-btn.outline:hover {
-    background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .pill-btn.active {
-    background-color: #FF4444; /* Stop Red */
+  background-color: #FF4444;
+  /* Stop Red */
 }
 
 /* Loading Spinner */
 /* Loading Spinner */
 .pill-btn.loading {
-    opacity: 0.7;
-    cursor: wait;
+  opacity: 0.7;
+  cursor: wait;
 }
 
 /* AI Easy Read Mode (Dyslexia Friendly) */
 .dyslexia-mode .article-content {
-    font-size: 1.6rem; /* Larger */
-    line-height: 2.2em !important; /* Very spacious */
-    word-spacing: 0.2rem;
-    letter-spacing: 0.05em !important;
+  font-size: 1.6rem;
+  /* Larger */
+  line-height: 2.2em !important;
+  /* Very spacious */
+  word-spacing: 0.2rem;
+  letter-spacing: 0.05em !important;
 }
 
 .dyslexia-mode .reading-paragraph {
-    margin-bottom: 4rem; /* More space between blocks */
-    padding: 2rem;
-    background-color: #fff; /* Card style for focus */
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); /* Subtle lift */
-    border-left: 4px solid var(--accent-color); /* Visual Anchor */
+  margin-bottom: 4rem;
+  /* More space between blocks */
+  padding: 2rem;
+  background-color: #fff;
+  /* Card style for focus */
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  /* Subtle lift */
+  border-left: 4px solid var(--accent-color);
+  /* Visual Anchor */
 }
 
 /* In Easy Mode, active focus pops even more */
 .dyslexia-mode .active-focus {
-    transform: scale(1.03);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-    background-color: #FFFCD0 !important;
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  background-color: #FFFCD0 !important;
 }
 
 /* Dark Mode Overrides */
 body.dark-mode .back-btn {
-    color: var(--text-color);
+  color: var(--text-color);
 }
 
 body.dark-mode .article-header h1 {
-    color: var(--text-color);
+  color: var(--text-color);
 }
 
-body.dark-mode .article-content, 
+body.dark-mode .article-content,
 body.dark-mode .reading-paragraph {
-    color: var(--text-secondary); /* Dimmed by default */
+  color: var(--text-secondary);
+  /* Dimmed by default */
 }
 
 body.dark-mode .reading-paragraph:hover,
 body.dark-mode .focused-paragraph {
-    color: var(--text-color); /* Bright on focus */
+  color: var(--text-color);
+  /* Bright on focus */
 }
 
 body.dark-mode .dyslexia-mode .reading-paragraph {
-    background-color: var(--card-bg);
-    box-shadow: none;
-    border-left-color: var(--accent-color);
+  background-color: var(--card-bg);
+  box-shadow: none;
+  border-left-color: var(--accent-color);
 }
 
 body.dark-mode .pill-btn.outline {
-    color: var(--text-color);
-    border-color: var(--text-color);
+  color: var(--text-color);
+  border-color: var(--text-color);
 }
 
 body.dark-mode .pill-btn {
-    background-color: var(--primary-color);
-    color: #000;
+  background-color: var(--primary-color);
+  color: #000;
 }
 
 /* Active Focus in Dark Mode */
 body.dark-mode .active-focus {
-    background-color: #333333 !important; /* Dark Highlight */
-    color: #FFFFFF !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  background-color: #333333 !important;
+  /* Dark Highlight */
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* =========================================
@@ -343,7 +384,8 @@ body.dark-mode .active-focus {
   border-radius: 20px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 245, 255, 0.6));
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px rgba(0, 82, 255, 0.08); /* Soft blue shadow */
+  box-shadow: 0 8px 32px rgba(0, 82, 255, 0.08);
+  /* Soft blue shadow */
   backdrop-filter: blur(12px);
   overflow: hidden;
   transition: all 0.3s ease;
@@ -378,9 +420,20 @@ body.dark-mode .active-focus {
 }
 
 @keyframes pulse-glow {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .ai-label {
@@ -458,7 +511,8 @@ body.dark-mode .active-focus {
    Dark Mode Overrides
    ========================================= */
 body.dark-mode .ai-summary-container {
-  background: linear-gradient(135deg, rgba(40, 40, 40, 0.8), rgba(30, 30, 35, 0.9)); /* Much darker/opaque */
+  background: linear-gradient(135deg, rgba(40, 40, 40, 0.8), rgba(30, 30, 35, 0.9));
+  /* Much darker/opaque */
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
@@ -485,7 +539,8 @@ body.dark-mode .ai-arrow {
 }
 
 body.dark-mode .ai-content-wrapper {
-  background: rgba(0, 0, 0, 0.4); /* Darker backdrop for text */
+  background: rgba(0, 0, 0, 0.4);
+  /* Darker backdrop for text */
 }
 
 body.dark-mode .ai-number {
@@ -495,7 +550,40 @@ body.dark-mode .ai-number {
 }
 
 body.dark-mode .ai-text {
-  color: #FFFFFF !important; /* Pure White */
+  color: #FFFFFF !important;
+  /* Pure White */
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Better legibility */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  /* Better legibility */
+}
+
+/* =========================================
+   Floating Focus Timer
+   ========================================= */
+.floating-timer-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2.5rem;
+  z-index: 999;
+  animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes floatUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Adjust timer internal spacing if needed when floating */
+.floating-timer-container .focus-timer {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .floating-timer-container .focus-timer {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

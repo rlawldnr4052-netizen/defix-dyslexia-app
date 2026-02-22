@@ -6,6 +6,7 @@ import CalibrationDots from './CalibrationDots';
 import DebugStatus from './DebugStatus';
 import TooltipOverlay from './TooltipOverlay';
 import AISummary from './AISummary';
+import FocusTimer from './FocusTimer'; // Added FocusTimer
 import { vocabulary } from '../data/vocabulary';
 import SoundManager from '../utils/SoundManager';
 import { useEyeTracker } from '../context/EyeTrackerContext';
@@ -269,6 +270,11 @@ const ArticleReader = ({ article, onBack, allArticles, setHeaderContent }) => {
                 term={tooltip.term}
                 definition={tooltip.definition}
             />
+
+            {/* Floating Focus Timer */}
+            <div className="floating-timer-container">
+                <FocusTimer />
+            </div>
         </div>
     );
 };

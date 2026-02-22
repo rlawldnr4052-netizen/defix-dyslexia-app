@@ -69,9 +69,7 @@ const Header = ({ rightContent, user, isDarkMode, toggleTheme, activeCategory, s
           <div className="custom-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {rightContent}
           </div>
-        ) : (
-          <FocusTimer />
-        )}
+        ) : null}
       </div>
     </header>
   );
