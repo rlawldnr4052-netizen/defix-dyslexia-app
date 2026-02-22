@@ -1,15 +1,15 @@
 export const NewsService = {
-  // Proxy to bypass CORS
-  PROXY_URL: 'https://api.allorigins.win/get?url=',
+  // Wikipedia API Endpoint (Supports CORS)
+  WIKI_API: 'https://ko.wikipedia.org/w/api.php',
   
-  // Google News RSS URLs (Korean Edition)
-  RSS_FEEDS: {
-    'IT/기술': 'https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=ko&gl=KR&ceid=KR:ko',
-    '건강': 'https://news.google.com/rss/search?q=%EA%B1%B4%EA%B0%95&hl=ko&gl=KR&ceid=KR%3Ako', // Search "Health"
-    '과학': 'https://news.google.com/rss/search?q=%EA%B3%BC%ED%95%99&hl=ko&gl=KR&ceid=KR%3Ako', // Search "Science"
-    '경제': 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=ko&gl=KR&ceid=KR:ko',
-    '경제/금융': 'https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=ko&gl=KR&ceid=KR:ko', // Alias for Selector
-    '예술': 'https://news.google.com/rss/search?q=%EC%98%88%EC%88%A0&hl=ko&gl=KR&ceid=KR%3Ako',   // Search "Art"
+  // Mapping interests to good Wikipedia search queries
+  SEARCH_QUERIES: {
+    'IT/기술': '인공지능|컴퓨터 과학|스마트폰|메타버스|로봇공학|자율주행|디지털',
+    '건강': '건강|운동|의학|영양소|정신 건강|수면|질환',
+    '과학': '과학|우주|물리학|생물학|화학|지구과학|유전학',
+    '경제': '경제|금융|주식 시장|가상화폐|기업|무역|스타트업',
+    '경제/금융': '경제|금융|주식 시장|가상화폐|기업|무역|스타트업',
+    '예술': '예술|미술|음악|디자인|영화|건축|사진',
   },
 
   // Fallback Images by Category (Expanded to 20+ per category)
@@ -129,8 +129,7 @@ export const NewsService = {
   async fetchArticles(interests) {
     if (!interests || interests.length === 0) return [];
 
-    // 1. Check Cache (Simple 1-hour cache)
-    const CACHE_KEY = `news_cache_${interests.sort().join('_')}`;
+    const CACHE_KEY = `wiki_cache_${interests.sort().join('_')}`;
     const CACHE_DURATION = 60 * 60 * 1000; // 1 Hour
     const cached = localStorage.getItem(CACHE_KEY);
     
@@ -138,7 +137,7 @@ export const NewsService = {
         try {
             const { timestamp, data } = JSON.parse(cached);
             if (Date.now() - timestamp < CACHE_DURATION) {
-                console.log("Using cached news data");
+                console.log("Using cached Wikipedia data");
                 return data;
             }
         } catch (e) {
@@ -147,295 +146,114 @@ export const NewsService = {
     }
 
     let allArticles = [];
-    let hasNetworkError = false;
 
-    // 2. Fetch from each selected interest with Timeout
-    for (const interest of interests) {
-      const feedUrl = this.RSS_FEEDS[interest];
-      if (!feedUrl) continue;
+    const fetchPromises = interests.map(async (interest) => {
+       try {
+           const queryPool = (this.SEARCH_QUERIES[interest] || interest).split('|');
+           // Pick 2 random queries to diversify content
+           const selectedQueries = queryPool.sort(() => 0.5 - Math.random()).slice(0, 2);
+           
+           for(const query of selectedQueries) {
+               // 1. Search for titles
+               const searchUrl = `${this.WIKI_API}?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json&origin=*&srlimit=2`;
+               const searchRes = await fetch(searchUrl);
+               const searchData = await searchRes.json();
+               
+               if(!searchData.query || !searchData.query.search) continue;
+               
+               const titles = searchData.query.search.map(r => r.title);
+               if(titles.length === 0) continue;
 
-      try {
-        // Use rss2json for better reliability (faster, JSON response)
-        // Note: rss2json has a free tier limit, but for demo it's much more stable than allorigins
-        const RSS2JSON_URL = 'https://api.rss2json.com/v1/api.json?rss_url=';
-        
-        // Create a timeout promise (5 seconds)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+               // 2. Fetch full content and image for these titles
+               const titlesParam = titles.map(encodeURIComponent).join('|');
+               const contentUrl = `${this.WIKI_API}?action=query&prop=extracts|pageimages&exintro=false&explaintext=true&titles=${titlesParam}&format=json&origin=*&pithumbsize=1000`;
+               const contentRes = await fetch(contentUrl);
+               const contentData = await contentRes.json();
+               
+               if(!contentData.query || !contentData.query.pages) continue;
+               
+               const pages = Object.values(contentData.query.pages);
+               
+               pages.forEach(page => {
+                   if(page.missing === "") return;
+                   
+                   const title = page.title;
+                   const extract = page.extract || "";
+                   if(extract.length < 200) return; // Skip very short pages or disambiguation
+                   
+                   // Clean up text: remove reference sections
+                   const cleanText = extract.split(/==\s*참고 ?문헌\s*==|==\s*각주\s*==|==\s*같이 보기\s*==|==\s*외부 링크\s*==/)[0].trim();
+                   
+                   // Split into paragraphs. Filter out very short lines (often headers)
+                   let paragraphs = cleanText.split(/\n\s*\n/).map(p => p.replace(/\n/g, ' ').trim()).filter(p => p.length > 50);
+                   
+                   // If article is just one giant block, split by periods for better readability
+                   if(paragraphs.length === 1 && paragraphs[0].length > 400) {
+                      paragraphs = paragraphs[0].split(/(?<=\.)\s+/);
+                   }
 
-        const response = await fetch(`${RSS2JSON_URL}${encodeURIComponent(feedUrl)}`, {
-            signal: controller.signal
-        });
-        clearTimeout(timeoutId);
+                   const summary = paragraphs[0] || title;
+                   
+                   const extractFirstSentence = (text) => {
+                       if(!text) return "";
+                       const match = text.match(/[^.!?]+[.!?]/);
+                       return match ? match[0] : text.substring(0, 50) + "...";
+                   };
+                   
+                   const keyPoints = [];
+                   if(paragraphs[0]) keyPoints.push(extractFirstSentence(paragraphs[0]));
+                   if(paragraphs[1]) keyPoints.push(extractFirstSentence(paragraphs[1]));
+                   if(paragraphs[Math.floor(paragraphs.length/2)]) keyPoints.push(extractFirstSentence(paragraphs[Math.floor(paragraphs.length/2)]));
 
-        if (!response.ok) throw new Error('Network response was not ok');
+                   // Image handling
+                   let image = page.thumbnail ? page.thumbnail.source : null;
+                   if(!image) {
+                       const fallbacks = this.FALLBACK_IMAGES[interest] || this.FALLBACK_IMAGES['IT/기술'];
+                       image = fallbacks[this.getHash(title) % fallbacks.length];
+                   }
+                   
+                   allArticles.push({
+                        id: `wiki-${page.pageid}`,
+                        title: title,
+                        summary: summary,
+                        content: paragraphs, 
+                        image: image,
+                        category: this.mapCategoryToEnglish(interest),
+                        date: new Date().toLocaleDateString(),
+                        originalDate: new Date().toISOString(),
+                        originalLink: `https://ko.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+                        keyPoints: keyPoints.filter(k => k) 
+                   });
+               });
+           }
+       } catch (error) {
+           console.warn(`Failed to fetch Wiki for ${interest}`, error);
+       }
+    });
 
-        const data = await response.json();
-        
-        if (data.status === 'ok' && data.items) {
-             const parsed = this.parseRSS2JSON(data.items, interest); // New Parser for JSON
-             allArticles = [...allArticles, ...parsed];
-        } else {
-             // Fallback to old parser/proxy if needed (omitted for speed, relying on mock fallback if this fails)
-             throw new Error("RSS2JSON Failed");
-        }
-      } catch (error) {
-        console.warn(`Failed to fetch news for ${interest} (Using Fallback):`, error);
-        hasNetworkError = true;
-        
-        // Immediate Fallback for this category
-        // If network fails, we generate mock data for this category so the user sees SOMETHING
-        const mockData = this.generateMockArticles(interest);
-        allArticles = [...allArticles, ...mockData];
-      }
-    }
+    await Promise.all(fetchPromises);
 
-    // Sort by date (newest first)
-    const sortedArticles = allArticles.sort((a, b) => new Date(b.originalDate) - new Date(a.originalDate));
+    // Shuffle articles mixing categories naturally
+    const shuffledArticles = allArticles.sort(() => 0.5 - Math.random());
 
-    // 3. Save to Cache (if we have a good amount of data)
-    if (sortedArticles.length > 0) {
+    if (shuffledArticles.length > 0) {
         localStorage.setItem(CACHE_KEY, JSON.stringify({
             timestamp: Date.now(),
-            data: sortedArticles
+            data: shuffledArticles
         }));
     }
 
-    return sortedArticles;
+    return shuffledArticles;
   },
 
-  // Helper: Generate Mock Data when Network Fails
-  generateMockArticles(category) {
-      const engCat = this.mapCategoryToEnglish(category);
-      const fallbacks = this.FALLBACK_IMAGES[category] || this.FALLBACK_IMAGES['IT/기술'];
-      const mocks = [];
-
-      for (let i = 0; i < 3; i++) { // Generate 3 mock articles per failed category
-        const title = `${category} 분야의 최신 동향 (오프라인 모드)`;
-        const summary = "현재 네트워크 연결이 원활하지 않아 예비 기사를 표시합니다. 이 기사는 앱에 내장된 데이터를 기반으로 생성되었습니다.";
-        const fullContent = this.generateExtendedContent(title, engCat);
-        
-        // Reuse extraction logic
-        const extractFirstSentence = (text) => {
-            const match = text.match(/[^.!?]+[.!?]/);
-            return match ? match[0] : text;
-        };
-
-         const keyPoints = [
-            extractFirstSentence(fullContent[0]),
-            extractFirstSentence(fullContent[1]),
-            extractFirstSentence(fullContent[4])
-        ];
-
-        mocks.push({
-            id: `mock-${category}-${i}-${Date.now()}`,
-            title: title,
-            summary: summary,
-            content: fullContent,
-            image: fallbacks[i % fallbacks.length],
-            category: engCat,
-            date: new Date().toLocaleDateString(),
-            originalDate: new Date().toISOString(),
-            originalLink: '#',
-            keyPoints: keyPoints
-        });
-      }
-      return mocks;
-  },
-
-  // Helper to generate a consistent hash from a string (Title)
   getHash(str) {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = (hash << 5) - hash + char;
-        hash = hash & hash; // Convert to 32bit integer
+        hash = hash & hash;
       }
       return Math.abs(hash);
-  },
-
-  parseRSS(xmlText, category) {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-    const items = xmlDoc.querySelectorAll("item");
-    const articles = [];
-
-    // Handle aliases for fallbacks
-    const fallbackKey = items[0] ? category : 'IT/기술'; // Safety
-    const fallbacks = this.FALLBACK_IMAGES[category] || this.FALLBACK_IMAGES[category === '경제/금융' ? '경제' : 'IT/기술'] || this.FALLBACK_IMAGES['IT/기술'];
-
-    items.forEach((item, index) => {
-      const title = (item.querySelector("title")?.textContent || "No Title").normalize('NFC');
-      const link = item.querySelector("link")?.textContent || "#";
-      const pubDate = item.querySelector("pubDate")?.textContent || new Date().toISOString();
-      let description = item.querySelector("description")?.textContent || "";
-
-      // Clean description (remove HTML tags) and Normalize
-      const cleanDesc = description.replace(/<[^>]*>?/gm, '').trim().normalize('NFC'); 
-      // Sometimes description is just a link or empty, use title as summary if needed
-      const summary = cleanDesc.length > 10 ? cleanDesc : title;
-
-      // Extract Image (if in description, otherwise random fallback)
-      // Google RSS usually puts img in description as <img src="...">
-      const imgMatch = description.match(/src="([^"]+)"/);
-      let image = imgMatch ? imgMatch[1] : null;
-
-      if (!image) {
-        // Smart Selection: Use Title Hash to pick consistent image
-        const titleHash = this.getHash(title);
-        image = fallbacks[titleHash % fallbacks.length];
-      }
-
-      // 3. Dynamic Real Summarization
-      // Instead of hardcoded strings, we extract meaningful sentences from the "Extended Content" we just generated.
-      // This mimics a real AI summary by accurately reflecting the article's body.
-      
-      const fullContent = this.generateExtendedContent(title, this.mapCategoryToEnglish(category));
-      
-      // Heuristic:
-      // 1. Pick the first sentence of the Intro (Context)
-      // 2. Pick the first sentence of the Body (Main Point)
-      // 3. Pick the first sentence of the Conclusion (Takeaway)
-      
-      const extractFirstSentence = (text) => {
-          const match = text.match(/[^.!?]+[.!?]/);
-          return match ? match[0] : text;
-      };
-
-      const keyPoints = [
-          extractFirstSentence(fullContent[0]), // Introduction
-          extractFirstSentence(fullContent[1]), // Body Paragraph 1
-          extractFirstSentence(fullContent[4])  // Conclusion
-      ];
-
-      // Format Date
-      const dateObj = new Date(pubDate);
-      const formattedDate = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
-
-      articles.push({
-        id: link, // Use link as ID
-        title: title,
-        summary: summary,
-        content: this.generateExtendedContent(title, this.mapCategoryToEnglish(category)), // Generate full content
-        image: image,
-        category: this.mapCategoryToEnglish(category),
-        date: formattedDate,
-        originalDate: pubDate, // For sorting
-        originalLink: link,
-        keyPoints: keyPoints
-      });
-    });
-
-    return articles;
-  },
-
-  // New Parser for RSS2JSON format
-  parseRSS2JSON(items, category) {
-      return items.map(item => {
-          const title = (item.title || "No Title").normalize('NFC');
-          const link = item.link;
-          const pubDate = item.pubDate;
-          const description = item.description || "";
-          
-          // Image extraction
-          let image = item.thumbnail;
-          if (!image) {
-              const imgMatch = description.match(/src="([^"]+)"/);
-              image = imgMatch ? imgMatch[1] : null;
-          }
-          
-          // Fallback Image
-          if (!image) {
-             const fallbacks = this.FALLBACK_IMAGES[category] || this.FALLBACK_IMAGES['IT/기술'];
-             const titleHash = this.getHash(title);
-             image = fallbacks[titleHash % fallbacks.length];
-          }
-
-          // Summary Generation
-          const fullContent = this.generateExtendedContent(title, this.mapCategoryToEnglish(category));
-          
-          const extractFirstSentence = (text) => {
-            const match = text.match(/[^.!?]+[.!?]/);
-            return match ? match[0] : text;
-          };
-
-          const keyPoints = [
-            extractFirstSentence(fullContent[0]),
-            extractFirstSentence(fullContent[1]),
-            extractFirstSentence(fullContent[4])
-          ];
-          
-          // Date Formatting
-          const dateObj = new Date(pubDate.replace(/-/g, '/')); 
-          const formattedDate = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
-
-          return {
-            id: link,
-            title: title,
-            summary: title,
-            content: fullContent,
-            image: image,
-            category: this.mapCategoryToEnglish(category),
-            date: formattedDate,
-            originalDate: pubDate,
-            originalLink: link,
-            keyPoints: keyPoints
-          };
-      });
-  },
-
-  // Helper to generate simulated full content
-  generateExtendedContent(title, category) {
-      const intro = [
-          "이 기사는 최신 트렌드와 심층적인 분석을 바탕으로 작성되었습니다. 독자들에게 가장 중요하고 시의적절한 정보를 제공하기 위해 다각도로 취재한 내용을 담고 있습니다.",
-          "최근 업계에서 주목받고 있는 이 이슈는 향후 시장의 변화를 주도할 것으로 예상됩니다. 전문가들은 이번 변화가 단기적인 현상에 그치지 않고 장기적인 패러다임 전환으로 이어질 수 있다고 전망합니다.",
-          "이번 보도는 단순한 사실 전달을 넘어, 그 이면에 숨겨진 의미와 파급 효과를 짚어보는 데 중점을 두었습니다. 독자 여러분이 현상을 더 깊이 이해하는 데 도움이 될 것입니다."
-      ];
-
-      const body = {
-          'Technology': [
-              "기술의 발전은 우리의 삶을 빠르게 변화시키고 있습니다. 인공지능과 데이터 기술의 융합은 기존 산업의 경계를 허물고 새로운 가치를 창출하고 있습니다.",
-              "특히 이번 기술적 혁신은 효율성을 극대화하는 동시에 사용자 경험을 혁신적으로 개선할 잠재력을 가지고 있습니다.",
-              "앞으로도 기술 기업들의 치열한 경쟁 속에서 어떤 새로운 서비스가 등장할지 귀추가 주목됩니다."
-          ],
-          'Health': [
-              "건강한 삶을 유지하기 위해서는 올바른 생활 습관과 균형 잡힌 식단이 필수적입니다. 이번 연구 결과는 우리가 평소 간과하기 쉬운 건강 관리의 중요성을 다시 한번 일깨워줍니다.",
-              "전문가들은 규칙적인 운동과 스트레스 관리가 질병 예방의 핵심이라고 강조합니다. 작은 습관의 변화가 장기적으로 큰 건강상의 이점을 가져올 수 있습니다.",
-              "자신의 몸 상태를 지속적으로 체크하고, 필요시 전문가의 조언을 구하는 것이 무엇보다 중요합니다."
-          ],
-          'Science': [
-              "과학적 발견은 인류의 지평을 넓히는 중요한 열쇠입니다. 이번 연구는 기존의 학설을 뒤집는 새로운 증거를 제시하며 학계의 큰 관심을 받고 있습니다.",
-              "연구팀은 수년간의 데이터를 분석하여 이와 같은 결론을 도출해냈습니다. 이는 향후 관련 분야의 연구에 중요한 이정표가 될 것입니다.",
-              "우주와 자연의 신비를 풀기 위한 과학자들의 노력은 앞으로도 계속될 것입니다."
-          ],
-          'Economy': [
-              "경제 상황의 변동성은 기업과 개인 모두에게 큰 영향을 미칩니다. 이번 시장의 움직임은 글로벌 경제 환경의 변화와 밀접하게 연관되어 있습니다.",
-              "투자자들은 이러한 불확실성 속에서 리스크를 관리하고 새로운 기회를 포착하기 위해 신중한 판단이 필요합니다.",
-              "정부의 정책 변화와 금리 추이는 향후 경제 전망을 예측하는 데 중요한 변수가 될 것입니다."
-          ],
-          'Art': [
-              "예술은 시대를 반영하는 거울이자, 인간의 감성을 자극하는 창조적 활동입니다. 이번 전시는 작가의 독창적인 시각과 철학을 엿볼 수 있는 좋은 기회입니다.",
-              "작품 속에 담긴 메시지는 관객들에게 깊은 울림을 줍니다. 예술을 통해 우리는 일상을 새롭게 바라보고 삶의 의미를 되새길 수 있습니다.",
-              "문화 예술에 대한 지속적인 관심과 향유는 우리 사회를 더욱 풍요롭게 만들 것입니다."
-          ]
-      };
-
-      const conclusion = [
-          "결론적으로, 이번 사안은 우리에게 시사하는 바가 큽니다. 지속적인 관심과 논의가 필요한 시점입니다.",
-          "앞으로 전개될 상황을 예의주시하며 유연하게 대응하는 자세가 필요합니다.",
-          "더 자세한 내용은 관련 전문가들의 분석을 참고하시기 바랍니다."
-      ];
-
-      const catBody = body[category] || body['Technology'];
-      
-      // Combine to make a plausible 3-4 paragraph article
-      return [
-          intro[this.getHash(title) % intro.length],
-          catBody[0],
-          catBody[1],
-          catBody[2],
-          conclusion[this.getHash(title) % conclusion.length]
-      ];
   },
 
   mapCategoryToEnglish(korean) {
@@ -444,7 +262,7 @@ export const NewsService = {
       '건강': 'Health',
       '과학': 'Science',
       '경제': 'Economy',
-      '경제/금융': 'Economy', // Alias
+      '경제/금융': 'Economy',
       '예술': 'Art'
     };
     return map[korean] || 'General';
