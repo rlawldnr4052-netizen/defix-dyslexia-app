@@ -2,8 +2,19 @@ import Logo from './Logo'; // Add Import
 import FocusTimer from './FocusTimer'; // Add Import
 import './Header.css'; // Add missing CSS import
 
-const Header = ({ rightContent, user, isDarkMode, toggleTheme }) => {
-  const interests = ['경제', 'IT', '예술', '과학', '건강'];
+const Header = ({ rightContent, user, isDarkMode, toggleTheme, activeCategory, setActiveCategory }) => {
+  const interests = ['전체', '경제', 'IT', '예술', '과학', '건강'];
+
+  // Map display names to actual fetching categories if needed, 
+  // but NewsService handles exact matches. IT -> IT/기술 mapping maybe needed.
+  const handleCategoryClick = (interest) => {
+    if (setActiveCategory) {
+      // Map shorthand to full name for the news fetching logic if necessary,
+      // though 'IT' is fine if NewsService handles it.
+      const fetchCategory = interest === 'IT' ? 'IT/기술' : interest;
+      setActiveCategory(fetchCategory);
+    }
+  };
 
   return (
     <header className="app-header">
@@ -12,11 +23,19 @@ const Header = ({ rightContent, user, isDarkMode, toggleTheme }) => {
       </div>
 
       <nav className="interest-nav">
-        {interests.map((interest) => (
-          <button key={interest} className="interest-chip">
-            {interest}
-          </button>
-        ))}
+        {interests.map((interest) => {
+          const fetchCat = interest === 'IT' ? 'IT/기술' : interest;
+          const isActive = activeCategory === fetchCat;
+          return (
+            <button
+              key={interest}
+              className={`interest-chip ${isActive ? 'active' : ''}`}
+              onClick={() => handleCategoryClick(interest)}
+            >
+              {interest}
+            </button>
+          )
+        })}
       </nav>
 
       <div className="header-right">

@@ -16,6 +16,7 @@ import './App.css';
 function App() {
   const [headerContent, setHeaderContent] = useState(null);
   const [selectedTopics, setSelectedTopics] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('전체'); // State for Header filtering
 
   // Auth State
   const [user, setUser] = useState(null);
@@ -103,8 +104,13 @@ function App() {
                   user={user}
                   isDarkMode={isDarkMode}
                   toggleTheme={toggleTheme}
+                  activeCategory={activeCategory}
+                  setActiveCategory={setActiveCategory}
                 />
-                <ReaderManager setHeaderContent={setHeaderContent} interests={selectedTopics} />
+                <ReaderManager
+                  setHeaderContent={setHeaderContent}
+                  interests={activeCategory === '전체' ? selectedTopics : [activeCategory]}
+                />
                 <FloatingButton />
               </div>
             } />
