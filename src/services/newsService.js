@@ -1,7 +1,7 @@
 export const NewsService = {
   // Wikipedia API Endpoint (Supports CORS)
   WIKI_API: 'https://ko.wikipedia.org/w/api.php',
-  
+
   // Mapping interests to good Wikipedia search queries
   SEARCH_QUERIES: {
     'IT/기술': '인공지능|컴퓨터 과학|스마트폰|메타버스|로봇공학|자율주행|디지털',
@@ -129,106 +129,112 @@ export const NewsService = {
   async fetchArticles(interests) {
     if (!interests || interests.length === 0) return [];
 
-    const CACHE_KEY = `wiki_cache_${interests.sort().join('_')}`;
+    let targetInterests = interests;
+    if (interests.includes('전체')) {
+      // If '전체' is selected, fetch from all main categories instead
+      targetInterests = ['IT/기술', '건강', '과학', '경제', '예술'];
+    }
+
+    const CACHE_KEY = `wiki_cache_${targetInterests.sort().join('_')}`;
     const CACHE_DURATION = 60 * 60 * 1000; // 1 Hour
     const cached = localStorage.getItem(CACHE_KEY);
-    
+
     if (cached) {
-        try {
-            const { timestamp, data } = JSON.parse(cached);
-            if (Date.now() - timestamp < CACHE_DURATION) {
-                console.log("Using cached Wikipedia data");
-                return data;
-            }
-        } catch (e) {
-            console.error("Cache parse error", e);
+      try {
+        const { timestamp, data } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          console.log("Using cached Wikipedia data");
+          return data;
         }
+      } catch (e) {
+        console.error("Cache parse error", e);
+      }
     }
 
     let allArticles = [];
 
-    const fetchPromises = interests.map(async (interest) => {
-       try {
-           const queryPool = (this.SEARCH_QUERIES[interest] || interest).split('|');
-           // Pick 2 random queries to diversify content
-           const selectedQueries = queryPool.sort(() => 0.5 - Math.random()).slice(0, 2);
-           
-           for(const query of selectedQueries) {
-               // 1. Search for titles
-               const searchUrl = `${this.WIKI_API}?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json&origin=*&srlimit=2`;
-               const searchRes = await fetch(searchUrl);
-               const searchData = await searchRes.json();
-               
-               if(!searchData.query || !searchData.query.search) continue;
-               
-               const titles = searchData.query.search.map(r => r.title);
-               if(titles.length === 0) continue;
+    const fetchPromises = targetInterests.map(async (interest) => {
+      try {
+        const queryPool = (this.SEARCH_QUERIES[interest] || interest).split('|');
+        // Pick 2 random queries to diversify content
+        const selectedQueries = queryPool.sort(() => 0.5 - Math.random()).slice(0, 2);
 
-               // 2. Fetch full content and image for these titles
-               const titlesParam = titles.map(encodeURIComponent).join('|');
-               const contentUrl = `${this.WIKI_API}?action=query&prop=extracts|pageimages&exintro=false&explaintext=true&titles=${titlesParam}&format=json&origin=*&pithumbsize=1000`;
-               const contentRes = await fetch(contentUrl);
-               const contentData = await contentRes.json();
-               
-               if(!contentData.query || !contentData.query.pages) continue;
-               
-               const pages = Object.values(contentData.query.pages);
-               
-               pages.forEach(page => {
-                   if(page.missing === "") return;
-                   
-                   const title = page.title;
-                   const extract = page.extract || "";
-                   if(extract.length < 200) return; // Skip very short pages or disambiguation
-                   
-                   // Clean up text: remove reference sections
-                   const cleanText = extract.split(/==\s*참고 ?문헌\s*==|==\s*각주\s*==|==\s*같이 보기\s*==|==\s*외부 링크\s*==/)[0].trim();
-                   
-                   // Split into paragraphs. Filter out very short lines (often headers)
-                   let paragraphs = cleanText.split(/\n\s*\n/).map(p => p.replace(/\n/g, ' ').trim()).filter(p => p.length > 50);
-                   
-                   // If article is just one giant block, split by periods for better readability
-                   if(paragraphs.length === 1 && paragraphs[0].length > 400) {
-                      paragraphs = paragraphs[0].split(/(?<=\.)\s+/);
-                   }
+        for (const query of selectedQueries) {
+          // 1. Search for titles
+          const searchUrl = `${this.WIKI_API}?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json&origin=*&srlimit=2`;
+          const searchRes = await fetch(searchUrl);
+          const searchData = await searchRes.json();
 
-                   const summary = paragraphs[0] || title;
-                   
-                   const extractFirstSentence = (text) => {
-                       if(!text) return "";
-                       const match = text.match(/[^.!?]+[.!?]/);
-                       return match ? match[0] : text.substring(0, 50) + "...";
-                   };
-                   
-                   const keyPoints = [];
-                   if(paragraphs[0]) keyPoints.push(extractFirstSentence(paragraphs[0]));
-                   if(paragraphs[1]) keyPoints.push(extractFirstSentence(paragraphs[1]));
-                   if(paragraphs[Math.floor(paragraphs.length/2)]) keyPoints.push(extractFirstSentence(paragraphs[Math.floor(paragraphs.length/2)]));
+          if (!searchData.query || !searchData.query.search) continue;
 
-                   // Image handling
-                   let image = page.thumbnail ? page.thumbnail.source : null;
-                   if(!image) {
-                       const fallbacks = this.FALLBACK_IMAGES[interest] || this.FALLBACK_IMAGES['IT/기술'];
-                       image = fallbacks[this.getHash(title) % fallbacks.length];
-                   }
-                   
-                   allArticles.push({
-                        id: `wiki-${page.pageid}`,
-                        title: title,
-                        summary: summary,
-                        content: paragraphs, 
-                        image: image,
-                        category: this.mapCategoryToEnglish(interest),
-                        date: new Date().toLocaleDateString(),
-                        originalDate: new Date().toISOString(),
-                        originalLink: `https://ko.wikipedia.org/wiki/${encodeURIComponent(title)}`,
-                        keyPoints: keyPoints.filter(k => k) 
-                   });
-               });
-           }
-       } catch (error) {
-           console.warn(`Failed to fetch Wiki for ${interest}`, error);
-       }
+          const titles = searchData.query.search.map(r => r.title);
+          if (titles.length === 0) continue;
+
+          // 2. Fetch full content and image for these titles
+          const titlesParam = titles.map(encodeURIComponent).join('|');
+          const contentUrl = `${this.WIKI_API}?action=query&prop=extracts|pageimages&exintro=false&explaintext=true&titles=${titlesParam}&format=json&origin=*&pithumbsize=1000`;
+          const contentRes = await fetch(contentUrl);
+          const contentData = await contentRes.json();
+
+          if (!contentData.query || !contentData.query.pages) continue;
+
+          const pages = Object.values(contentData.query.pages);
+
+          pages.forEach(page => {
+            if (page.missing === "") return;
+
+            const title = page.title;
+            const extract = page.extract || "";
+            if (extract.length < 200) return; // Skip very short pages or disambiguation
+
+            // Clean up text: remove reference sections
+            const cleanText = extract.split(/==\s*참고 ?문헌\s*==|==\s*각주\s*==|==\s*같이 보기\s*==|==\s*외부 링크\s*==/)[0].trim();
+
+            // Split into paragraphs. Filter out very short lines (often headers)
+            let paragraphs = cleanText.split(/\n\s*\n/).map(p => p.replace(/\n/g, ' ').trim()).filter(p => p.length > 50);
+
+            // If article is just one giant block, split by periods for better readability
+            if (paragraphs.length === 1 && paragraphs[0].length > 400) {
+              paragraphs = paragraphs[0].split(/(?<=\.)\s+/);
+            }
+
+            const summary = paragraphs[0] || title;
+
+            const extractFirstSentence = (text) => {
+              if (!text) return "";
+              const match = text.match(/[^.!?]+[.!?]/);
+              return match ? match[0] : text.substring(0, 50) + "...";
+            };
+
+            const keyPoints = [];
+            if (paragraphs[0]) keyPoints.push(extractFirstSentence(paragraphs[0]));
+            if (paragraphs[1]) keyPoints.push(extractFirstSentence(paragraphs[1]));
+            if (paragraphs[Math.floor(paragraphs.length / 2)]) keyPoints.push(extractFirstSentence(paragraphs[Math.floor(paragraphs.length / 2)]));
+
+            // Image handling
+            let image = page.thumbnail ? page.thumbnail.source : null;
+            if (!image) {
+              const fallbacks = this.FALLBACK_IMAGES[interest] || this.FALLBACK_IMAGES['IT/기술'];
+              image = fallbacks[this.getHash(title) % fallbacks.length];
+            }
+
+            allArticles.push({
+              id: `wiki-${page.pageid}`,
+              title: title,
+              summary: summary,
+              content: paragraphs,
+              image: image,
+              category: this.mapCategoryToEnglish(interest),
+              date: new Date().toLocaleDateString(),
+              originalDate: new Date().toISOString(),
+              originalLink: `https://ko.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+              keyPoints: keyPoints.filter(k => k)
+            });
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch Wiki for ${interest}`, error);
+      }
     });
 
     await Promise.all(fetchPromises);
@@ -237,23 +243,23 @@ export const NewsService = {
     const shuffledArticles = allArticles.sort(() => 0.5 - Math.random());
 
     if (shuffledArticles.length > 0) {
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            data: shuffledArticles
-        }));
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        data: shuffledArticles
+      }));
     }
 
     return shuffledArticles;
   },
 
   getHash(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
   },
 
   mapCategoryToEnglish(korean) {
