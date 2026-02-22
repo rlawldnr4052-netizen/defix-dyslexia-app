@@ -1,6 +1,6 @@
 import Logo from './Logo'; // Add Import
-
 import FocusTimer from './FocusTimer'; // Add Import
+import './Header.css'; // Add missing CSS import
 
 const Header = ({ rightContent, user, isDarkMode, toggleTheme }) => {
   const interests = ['경제', 'IT', '예술', '과학', '건강'];
