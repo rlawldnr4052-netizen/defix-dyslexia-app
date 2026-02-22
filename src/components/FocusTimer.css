@@ -1,0 +1,102 @@
+.focus-timer-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color, #ffffff);
+    border: 1px solid var(--border-color, #eaeaea);
+    border-radius: 50px;
+    padding: 6px 16px;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark-mode .focus-timer-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.focus-timer-container.active {
+    border-color: var(--accent-color, #ff4757);
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.1);
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 80px; /* Prevent jitter when time changes */
+}
+
+.time-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color, #333);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+}
+
+body.dark-mode .time-text {
+    color: #fff;
+}
+
+.timer-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-left: 1px solid var(--border-color, #eaeaea);
+    padding-left: 12px;
+}
+
+body.dark-mode .timer-controls {
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color, #666);
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+}
+
+body.dark-mode .control-btn {
+    color: #aaa;
+}
+
+.control-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.control-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--accent-color, #ff4757);
+}
+
+body.dark-mode .control-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.control-btn.play:hover {
+    color: #2ed573;
+}
+
+.timer-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background-color: var(--accent-color, #ff4757);
+    transition: width 1s linear;
+}
