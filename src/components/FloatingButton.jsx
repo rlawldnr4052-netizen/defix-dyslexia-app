@@ -1,11 +1,15 @@
 import React from 'react';
 import './FloatingButton.css';
 
-const FloatingButton = () => {
+const FloatingButton = ({ isEasyMode, onToggle }) => {
   return (
-    <button className="floating-btn" aria-label="쉬운 말로 읽기모드">
-      <span className="btn-icon">✨</span>
-      <span className="btn-text">쉬운 말로 읽기</span>
+    <button
+      className={`floating-btn ${isEasyMode ? 'active' : ''}`}
+      aria-label={isEasyMode ? '원본 모드로 전환' : '쉬운 읽기 모드로 전환'}
+      onClick={onToggle}
+    >
+      <span className="btn-icon">{isEasyMode ? '📖' : '✨'}</span>
+      <span className="btn-text">{isEasyMode ? '원본 보기' : '쉬운 읽기'}</span>
     </button>
   );
 };

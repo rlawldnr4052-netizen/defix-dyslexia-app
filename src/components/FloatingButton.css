@@ -3,7 +3,7 @@
   bottom: 2rem;
   right: 2rem;
   background-color: var(--text-color);
-  color: white;
+  color: var(--bg-color);
   border: none;
   padding: 1rem 1.5rem;
   border-radius: 50px;
@@ -14,11 +14,23 @@
   cursor: pointer;
   z-index: 100;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: var(--font-family);
+}
+
+/* 활성 상태 (쉬운 읽기 ON) */
+.floating-btn.active {
+  background-color: #4A90D9;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(74, 144, 217, 0.4);
 }
 
 .floating-btn:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.floating-btn.active:hover {
+  box-shadow: 0 8px 28px rgba(74, 144, 217, 0.5);
 }
 
 .btn-icon {

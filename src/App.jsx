@@ -16,7 +16,8 @@ import './App.css';
 function App() {
   const [headerContent, setHeaderContent] = useState(null);
   const [selectedTopics, setSelectedTopics] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('전체'); // State for Header filtering
+  const [activeCategory, setActiveCategory] = useState('전체');
+  const [isEasyMode, setIsEasyMode] = useState(false); // FloatingButton으로 제어하는 쉬운 읽기 모드
 
   // Auth State
   const [user, setUser] = useState(null);
@@ -110,8 +111,9 @@ function App() {
                 <ReaderManager
                   setHeaderContent={setHeaderContent}
                   interests={activeCategory === '전체' ? selectedTopics : [activeCategory]}
+                  isEasyMode={isEasyMode}
                 />
-                <FloatingButton />
+                <FloatingButton isEasyMode={isEasyMode} onToggle={() => setIsEasyMode(prev => !prev)} />
               </div>
             } />
 

@@ -242,7 +242,7 @@ export const EyeTrackerProvider = ({ children }) => {
     }, [isCalibrating]);
 
     return (
-        <EyeTrackerContext.Provider value={{ isActive, isLoading, gaze, startTracking, stopTracking, isCalibrating, toggleCalibration, lastError, scriptStatus: scriptStatus.current, logs }}>
+        <EyeTrackerContext.Provider value={{ isActive, isLoading, gaze, startTracking, stopTracking, isCalibrating, toggleCalibration, lastError, scriptStatus: scriptStatus.current, logs, addLog }}>
             {children}
         </EyeTrackerContext.Provider>
     );

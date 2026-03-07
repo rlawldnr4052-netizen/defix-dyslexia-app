@@ -160,8 +160,7 @@ body.dark-mode .reader-controls {
   /* Forces 1.8em */
   letter-spacing: 0.05em !important;
   /* Forces 0.05em */
-  color: #CCCCCC;
-  /* Default Light Gray */
+  color: var(--text-color);
   transition: color 0.2s ease;
   padding-top: 4rem;
   /* More safe space */
@@ -169,51 +168,105 @@ body.dark-mode .reader-controls {
 
 .reading-paragraph {
   margin-bottom: 3rem;
-  transition: all 0.2s ease;
-  /* Smooth transition */
-  color: #CCCCCC;
-  /* Inherit default */
+  transition: color 0.25s ease, background 0.25s ease;
+  /* 기본: 아이트래킹 OFF 시 읽기 가능한 색상 */
+  color: var(--text-color);
   cursor: default;
   text-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.05);
-  /* Fixed anchor shadow */
   transform: translateZ(0);
-  /* Optimize rendering */
   padding: 1rem;
-  /* Hit area */
   border-radius: 8px;
 }
 
-.active-focus {
-  background-color: #FFFCD0 !important;
-  /* CreamHighlight */
-  color: #333333 !important;
-  /* Force Black */
-  font-weight: 400 !important;
-  /* Maintain Bionic Base */
+/* 아이트래킹 ON: 미포커스 단락은 연하게 */
+.eye-tracking-mode .reading-paragraph {
+  color: #AAAAAA;
+}
+
+/* 아이트래킹 ON: 포커스 단락은 강조 */
+.eye-tracking-mode .focused-paragraph {
+  color: var(--text-color);
+  background-color: rgba(255, 252, 208, 0.4);
   border-radius: 8px;
-  /* Smooth corners */
-  box-shadow: 0 4px 12px rgba(255, 252, 208, 0.4);
-  /* Subtle glow */
-  transform: scale(1.02);
-  /* Slight pop */
-  transition: all 0.2s ease-out;
 }
 
-/* Ensure Bionic Boldness persists even when highlighted */
-.active-focus .bionic-word span:first-child {
-  font-weight: 600 !important;
-}
-
-/* Hover/Focus State - Eye Tracking Simulation */
-.reading-paragraph:hover,
-.focused-paragraph {
-  color: #333333;
-  /* Dark Black on Focus */
+/* 호버도 동일하게 */
+.reading-paragraph:hover {
+  color: var(--text-color);
 }
 
 .focused-paragraph {
-  /* No opacity change, color change handles focus now */
   opacity: 1;
+}
+
+/* 글 없음 에러 */
+.reader-error {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-color);
+}
+
+/* 아이트래킹 시작 인트로 모달 */
+.eye-intro-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-intro-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-deep);
+}
+
+.eye-intro-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.eye-intro-card h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.eye-intro-card > p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.eye-intro-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eye-intro-steps li {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 1rem;
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.eye-intro-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 .dimmed-paragraph {

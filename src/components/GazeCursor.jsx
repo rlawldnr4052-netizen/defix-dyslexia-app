@@ -6,6 +6,7 @@ const GazeCursor = () => {
 
 
     // Continuous Scroll Logic (Frame-based for smoothness)
+    // 스크롤 구간: 상단 20% / 하단 20% (중간 60%는 안전 구간 - 읽기에 적합)
     React.useEffect(() => {
         if (!isActive || isCalibrating) return;
 
@@ -13,20 +14,19 @@ const GazeCursor = () => {
 
         const scrollLoop = () => {
             const screenH = window.innerHeight;
-            const scrollThresholdBottom = screenH * 0.60; 
-            const scrollThresholdTop = screenH * 0.40;    
-            const baseSpeed = 4;
+            const scrollThresholdBottom = screenH * 0.80; // 하단 20% 진입 시 아래로 스크롤
+            const scrollThresholdTop = screenH * 0.20;    // 상단 20% 진입 시 위로 스크롤
+            const baseSpeed = 2; // 속도 완화 (기존 4)
 
             if (gaze.y > scrollThresholdBottom) {
-                // Scroll Down
+                // Scroll Down - 구간 내 깊이에 비례한 속도
                 const ratio = (gaze.y - scrollThresholdBottom) / (screenH - scrollThresholdBottom);
-                // Max speed increased to 15px/frame for "Infinite" feel
-                const speed = baseSpeed + (ratio * 15); 
+                const speed = baseSpeed + (ratio * 10); // max 12px/frame (기존 19)
                 window.scrollBy(0, speed);
             } else if (gaze.y < scrollThresholdTop) {
                 // Scroll Up
                 const ratio = (scrollThresholdTop - gaze.y) / scrollThresholdTop;
-                const speed = -(baseSpeed + (ratio * 15));
+                const speed = -(baseSpeed + (ratio * 10));
                 window.scrollBy(0, speed);
             }
 
@@ -37,7 +37,7 @@ const GazeCursor = () => {
         animationFrameId = requestAnimationFrame(scrollLoop);
 
         return () => cancelAnimationFrame(animationFrameId);
-    }, [gaze.y, isActive, isCalibrating]); // Depend on gaze.y to update speed, but loop handles continuous
+    }, [gaze.y, isActive, isCalibrating]);
 
     if (!isActive) return null;
 

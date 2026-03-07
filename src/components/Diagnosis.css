@@ -68,5 +68,100 @@
 .instruction-text {
   color: var(--text-secondary);
   font-size: 1rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
+}
+
+.diagnosis-actions {
+  margin-top: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.action-btn {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 99px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.04);
+}
+
+.typo-btn {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  border: 1.5px solid rgba(255, 59, 48, 0.3);
+}
+
+.ok-btn {
+  background: var(--text-color);
+  color: var(--bg-color);
+}
+
+/* 결과 화면 */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.result-emoji {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.result-level {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.result-desc {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0.5rem 0 1rem;
+}
+
+.result-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  background: var(--border-color);
+  padding: 0.4rem 1.2rem;
+  border-radius: 99px;
+}
+
+.start-btn {
+  margin-top: 1.5rem;
+  padding: 1rem 2.5rem;
+  background: var(--text-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 99px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.start-btn:hover {
+  transform: scale(1.04) translateY(-2px);
+  box-shadow: var(--shadow-deep);
 }

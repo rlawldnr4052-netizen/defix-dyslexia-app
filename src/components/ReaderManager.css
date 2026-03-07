@@ -164,3 +164,76 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
 }
+
+/* 에러 상태 */
+.reader-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.reader-error-icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reader-error-state h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.reader-error-state p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.reader-retry-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  background: var(--text-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 99px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.reader-retry-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+/* 로딩 스피너 */
+.reader-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--text-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

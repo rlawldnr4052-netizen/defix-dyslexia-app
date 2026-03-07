@@ -3,16 +3,12 @@ import FocusTimer from './FocusTimer'; // Add Import
 import './Header.css'; // Add missing CSS import
 
 const Header = ({ rightContent, user, isDarkMode, toggleTheme, activeCategory, setActiveCategory }) => {
-  const interests = ['전체', '경제', 'IT', '예술', '과학', '건강'];
+  // InterestSelector와 동일한 8개 + 전체
+  const interests = ['전체', '경제/금융', 'IT/기술', '예술', '과학', '건강', '인문학', '자기계발', '역사'];
 
-  // Map display names to actual fetching categories if needed, 
-  // but NewsService handles exact matches. IT -> IT/기술 mapping maybe needed.
   const handleCategoryClick = (interest) => {
     if (setActiveCategory) {
-      // Map shorthand to full name for the news fetching logic if necessary,
-      // though 'IT' is fine if NewsService handles it.
-      const fetchCategory = interest === 'IT' ? 'IT/기술' : interest;
-      setActiveCategory(fetchCategory);
+      setActiveCategory(interest);
     }
   };
 
@@ -24,8 +20,7 @@ const Header = ({ rightContent, user, isDarkMode, toggleTheme, activeCategory, s
 
       <nav className="interest-nav">
         {interests.map((interest) => {
-          const fetchCat = interest === 'IT' ? 'IT/기술' : interest;
-          const isActive = activeCategory === fetchCat;
+          const isActive = activeCategory === interest;
           return (
             <button
               key={interest}
